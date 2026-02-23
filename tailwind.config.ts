@@ -10,16 +10,16 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          50: "#fef7ee",
-          100: "#fdedd6",
-          200: "#f9d7ad",
-          300: "#f4b978",
-          400: "#ee9242",
-          500: "#ea751d",
-          600: "#db5b13",
-          700: "#b54412",
-          800: "#903617",
-          900: "#742f16",
+          50: "#fef6f0",
+          100: "#fdece0",
+          200: "#fad4bc",
+          300: "#f5b48a",
+          400: "#ef8b4a",
+          500: "#e96d24",
+          600: "#da531a",
+          700: "#b53f17",
+          800: "#90341a",
+          900: "#742e18",
           950: "#3f1509",
         },
         accent: {
@@ -30,9 +30,31 @@ const config: Config = {
           400: "#4ade80",
           500: "#22c55e",
         },
+        surface: {
+          50: "#fafaf9",
+          100: "#f5f5f4",
+          200: "#e7e5e4",
+          800: "#292524",
+          900: "#1c1917",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        "2xl": "1rem",
+        "3xl": "1.5rem",
+        "4xl": "2rem",
+      },
+      boxShadow: {
+        soft: "0 2px 15px -3px rgb(0 0 0 / 0.07), 0 10px 20px -2px rgb(0 0 0 / 0.04)",
+        card: "0 4px 20px -2px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.04)",
+        glow: "0 0 40px -8px rgb(233 109 36 / 0.35)",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "mesh-warm": "radial-gradient(at 40% 20%, rgb(254 246 240) 0px, transparent 50%), radial-gradient(at 80% 0%, rgb(253 236 224) 0px, transparent 50%), radial-gradient(at 0% 50%, rgb(253 242 233) 0px, transparent 50%)",
       },
     },
   },

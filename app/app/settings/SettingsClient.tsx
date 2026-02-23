@@ -87,28 +87,36 @@ export default function SettingsClient({
   };
 
   return (
-    <div className="px-6 py-8 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+    <div className="px-5 py-8 max-w-lg mx-auto">
+      <h1 className="heading-display text-2xl text-stone-900 dark:text-white">
         Settings
       </h1>
 
-      {error && <p className="mt-4 text-red-600 text-sm">{error}</p>}
-      {success && <p className="mt-4 text-green-600 text-sm">{success}</p>}
+      {error && (
+        <div className="mt-4 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300 px-4 py-3 text-sm">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="mt-4 rounded-xl bg-accent-50 dark:bg-accent-950/30 text-accent-700 dark:text-accent-300 px-4 py-3 text-sm">
+          {success}
+        </div>
+      )}
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wide">
+      <section className="mt-8 card p-5">
+        <h2 className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">
           Profile
         </h2>
-        <div className="mt-3 space-y-4">
+        <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Display name
             </label>
             <input
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
+              className="input-field"
             />
           </div>
           <div>
@@ -121,10 +129,10 @@ export default function SettingsClient({
                   key={a.value}
                   type="button"
                   onClick={() => setAccent(a.value)}
-                  className={`tap-target rounded-lg px-4 py-2 text-sm ${
+                  className={`tap-target rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                     accent === a.value
-                      ? "bg-primary-600 text-white"
-                      : "bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300"
+                      ? "bg-primary-500 text-white shadow-soft"
+                      : "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700"
                   }`}
                 >
                   {a.label}
@@ -142,10 +150,10 @@ export default function SettingsClient({
                   key={g}
                   type="button"
                   onClick={() => setDailyGoal(g)}
-                  className={`tap-target rounded-lg px-4 py-2 text-sm ${
+                  className={`tap-target rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                     dailyGoal === g
-                      ? "bg-primary-600 text-white"
-                      : "bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300"
+                      ? "bg-primary-500 text-white shadow-soft"
+                      : "bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700"
                   }`}
                 >
                   {g}
@@ -154,29 +162,29 @@ export default function SettingsClient({
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Week (1–4)
             </label>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setWeek((w) => Math.max(1, w - 1))}
-                className="tap-target rounded-lg border border-stone-300 dark:border-stone-600 w-10 h-10 font-bold"
+                className="tap-target rounded-xl border-2 border-stone-300 dark:border-stone-600 w-11 h-11 font-bold text-lg hover:border-primary-400 dark:hover:border-primary-600 transition"
               >
                 −
               </button>
-              <span className="text-lg font-semibold">{week}</span>
+              <span className="text-xl font-display font-semibold w-8 text-center">{week}</span>
               <button
                 type="button"
                 onClick={() => setWeek((w) => Math.min(4, w + 1))}
-                className="tap-target rounded-lg border border-stone-300 dark:border-stone-600 w-10 h-10 font-bold"
+                className="tap-target rounded-xl border-2 border-stone-300 dark:border-stone-600 w-11 h-11 font-bold text-lg hover:border-primary-400 dark:hover:border-primary-600 transition"
               >
                 +
               </button>
               <button
                 type="button"
                 onClick={resetWeek}
-                className="tap-target text-sm text-stone-500 ml-2"
+                className="tap-target text-sm text-stone-500 dark:text-stone-400 ml-2 hover:underline"
               >
                 Reset to week 1
               </button>
@@ -186,46 +194,46 @@ export default function SettingsClient({
             type="button"
             onClick={saveProfile}
             disabled={loading}
-            className="tap-target rounded-xl bg-primary-600 text-white font-semibold py-3 px-6"
+            className="btn-primary mt-2 disabled:opacity-50"
           >
             Save
           </button>
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-sm font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wide">
+      <section className="mt-8 card p-5">
+        <h2 className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-2">
           Data & privacy
         </h2>
-        <p className="mt-2 text-sm text-stone-500">
+        <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
           Delete all your conversation history. Progress stats and vocab are kept.
         </p>
         <input
           type="text"
           value={deleteConfirm}
           onChange={(e) => setDeleteConfirm(e.target.value)}
-          placeholder='Type DELETE to confirm'
-          className="mt-2 w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
+          placeholder="Type DELETE to confirm"
+          className="input-field"
         />
         <button
           type="button"
           onClick={deleteHistory}
           disabled={loading || deleteConfirm !== "DELETE"}
-          className="tap-target mt-2 rounded-xl border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 py-3 px-6 disabled:opacity-50"
+          className="tap-target mt-3 rounded-xl border-2 border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 py-3 px-6 font-semibold hover:bg-red-50 dark:hover:bg-red-950/30 disabled:opacity-50 transition"
         >
           Delete conversation history
         </button>
       </section>
 
-      <section className="mt-10">
+      <section className="mt-8">
         <PWAInstallInstructions />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-8">
         <button
           type="button"
           onClick={signOut}
-          className="tap-target text-stone-500 dark:text-stone-400"
+          className="tap-target text-stone-500 dark:text-stone-400 text-sm font-medium hover:underline"
         >
           Sign out
         </button>

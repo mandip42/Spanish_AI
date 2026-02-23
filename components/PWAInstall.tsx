@@ -38,8 +38,8 @@ export default function PWAInstall() {
   if (installed || !showBanner) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-40 rounded-xl bg-stone-800 text-white p-4 shadow-lg border border-stone-700">
-      <p className="text-sm font-medium">Install Spanish AI on your phone</p>
+    <div className="fixed bottom-20 left-4 right-4 z-40 rounded-2xl bg-stone-900 dark:bg-stone-800 text-white p-4 shadow-card border border-stone-700/80">
+      <p className="text-sm font-semibold">Install Spanish AI on your phone</p>
       <p className="text-xs text-stone-400 mt-1">
         Add to home screen for quick access. AI features need internet.
       </p>
@@ -47,14 +47,14 @@ export default function PWAInstall() {
         <button
           type="button"
           onClick={handleInstall}
-          className="tap-target rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium"
+          className="tap-target rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold hover:bg-primary-600 transition"
         >
           Install
         </button>
         <button
           type="button"
           onClick={() => setShowBanner(false)}
-          className="tap-target rounded-lg bg-stone-600 px-4 py-2 text-sm"
+          className="tap-target rounded-xl bg-stone-600 px-4 py-2.5 text-sm font-medium hover:bg-stone-500 transition"
         >
           Later
         </button>
@@ -65,16 +65,16 @@ export default function PWAInstall() {
 
 export function PWAInstallInstructions() {
   return (
-    <div className="rounded-xl bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 p-4 mt-6">
-      <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+    <div className="card p-5">
+      <h3 className="font-display font-semibold text-stone-900 dark:text-white">
         Install on Android
       </h3>
-      <ol className="mt-2 list-decimal list-inside text-sm text-stone-600 dark:text-stone-400 space-y-1">
+      <ol className="mt-3 list-decimal list-inside text-sm text-stone-600 dark:text-stone-400 space-y-1.5">
         <li>Open this site in Chrome.</li>
         <li>Tap the menu (⋮) → &quot;Add to Home screen&quot; or &quot;Install app&quot;.</li>
         <li>Confirm. The icon will appear on your home screen.</li>
       </ol>
-      <p className="mt-2 text-xs text-stone-500">
+      <p className="mt-3 text-xs text-stone-500 dark:text-stone-500">
         Full AI practice requires an internet connection.
       </p>
     </div>

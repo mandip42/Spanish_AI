@@ -102,36 +102,47 @@ export default function HouseholdClient({
     };
 
   return (
-    <div className="px-6 py-8 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+    <div className="px-5 py-8 max-w-lg mx-auto">
+      <h1 className="heading-display text-2xl text-stone-900 dark:text-white">
         Household
       </h1>
-      <p className="mt-2 text-stone-600 dark:text-stone-400">
+      <p className="mt-2 text-stone-500 dark:text-stone-400 text-sm">
         Create or join a household to see each other&apos;s progress.
       </p>
 
-      {error && <p className="mt-4 text-red-600 text-sm">{error}</p>}
-      {success && <p className="mt-4 text-green-600 text-sm">{success}</p>}
+      {error && (
+        <div className="mt-4 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300 px-4 py-3 text-sm">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="mt-4 rounded-xl bg-accent-50 dark:bg-accent-950/30 text-accent-700 dark:text-accent-300 px-4 py-3 text-sm">
+          {success}
+        </div>
+      )}
 
       {!household ? (
         <div className="mt-8 space-y-6">
-          <div>
+          <div className="card p-5">
             <button
               type="button"
               onClick={createHousehold}
               disabled={loading}
-              className="tap-target w-full rounded-xl bg-primary-600 text-white font-semibold py-3"
+              className="btn-primary w-full py-3.5 disabled:opacity-50"
             >
               {loading ? "Creating…" : "Create household"}
             </button>
             {inviteCode && (
               <p className="mt-4 text-center">
-                Invite code: <strong className="text-lg tracking-widest">{inviteCode}</strong>
+                Invite code:{" "}
+                <strong className="text-xl tracking-[0.25em] text-primary-600 dark:text-primary-400 font-display">
+                  {inviteCode}
+                </strong>
               </p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+          <div className="card p-5">
+            <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
               Join with code
             </label>
             <div className="flex gap-2">
@@ -141,13 +152,13 @@ export default function HouseholdClient({
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                 placeholder="ABC123"
                 maxLength={6}
-                className="flex-1 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3 uppercase"
+                className="input-field flex-1 uppercase"
               />
               <button
                 type="button"
                 onClick={joinHousehold}
                 disabled={loading || joinCode.length < 4}
-                className="tap-target rounded-lg bg-stone-200 dark:bg-stone-700 px-4 py-3 font-medium"
+                className="btn-secondary shrink-0 py-3 px-5 disabled:opacity-50"
               >
                 Join
               </button>
@@ -156,24 +167,24 @@ export default function HouseholdClient({
         </div>
       ) : (
         <div className="mt-8">
-          <p className="text-stone-600 dark:text-stone-400">
-            Invite code: <strong className="tracking-widest">{household.invite_code}</strong>
+          <p className="text-stone-500 dark:text-stone-400 text-sm">
+            Invite code:{" "}
+            <strong className="tracking-widest text-primary-600 dark:text-primary-400 font-display">
+              {household.invite_code}
+            </strong>
           </p>
-          <h2 className="mt-6 text-lg font-semibold text-stone-900 dark:text-stone-100">
+          <h2 className="mt-6 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">
             Household dashboard
           </h2>
-          <ul className="mt-3 space-y-4">
+          <ul className="space-y-3">
             {members.map((m) => {
               const stat = getStat(m.user_id);
               return (
-                <li
-                  key={m.user_id}
-                  className="rounded-xl border border-stone-200 dark:border-stone-700 p-4"
-                >
-                  <p className="font-medium text-stone-900 dark:text-stone-100">
+                <li key={m.user_id} className="card p-5">
+                  <p className="font-display font-semibold text-stone-900 dark:text-white">
                     {m.display_name || "Member"}
                   </p>
-                  <p className="text-sm text-stone-500 mt-1">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                     Today: {stat.minutes} min · Streak: {stat.streak_count} day(s)
                   </p>
                 </li>
@@ -184,7 +195,7 @@ export default function HouseholdClient({
             type="button"
             onClick={leaveHousehold}
             disabled={loading}
-            className="mt-6 tap-target text-sm text-red-600 dark:text-red-400"
+            className="mt-6 tap-target text-sm font-medium text-red-600 dark:text-red-400 hover:underline"
           >
             Leave household
           </button>

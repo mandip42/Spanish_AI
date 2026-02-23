@@ -71,139 +71,148 @@ function AuthForm() {
   };
 
   return (
-    <main className="min-h-dvh app-shell flex flex-col bg-background px-6 py-10">
-      <Link href="/" className="text-primary-600 dark:text-primary-400 text-sm mb-6">
+    <main className="min-h-dvh app-shell flex flex-col bg-mesh-warm dark:bg-gradient-to-b dark:from-stone-900 dark:to-stone-950 px-6 py-10">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400 text-sm font-medium mb-8 hover:underline"
+      >
         ← Back
       </Link>
-      <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-        Welcome
-      </h1>
-      <>
-          <div className="flex gap-2 mt-6 border-b border-stone-200 dark:border-stone-700">
-            <button
-              type="button"
-              onClick={() => setActiveTab("login")}
-              className={`pb-3 px-2 font-medium border-b-2 -mb-px ${
-                activeTab === "login"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-stone-500"
-              }`}
-            >
-              Log in
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("signup")}
-              className={`pb-3 px-2 font-medium border-b-2 -mb-px ${
-                activeTab === "signup"
-                  ? "border-primary-600 text-primary-600"
-                  : "border-transparent text-stone-500"
-              }`}
-            >
-              Sign up
-            </button>
-          </div>
-
-          <form
-            onSubmit={activeTab === "login" ? handleLogin : handleSignUp}
-            className="mt-8 space-y-4"
+      <div className="card max-w-md mx-auto w-full">
+        <h1 className="heading-display text-2xl text-stone-900 dark:text-white">
+          Welcome
+        </h1>
+        <p className="mt-1 text-stone-500 dark:text-stone-400 text-sm">
+          Sign in or create an account to start practicing.
+        </p>
+        <div className="flex gap-1 mt-6 p-1 rounded-xl bg-stone-100 dark:bg-stone-800">
+          <button
+            type="button"
+            onClick={() => setActiveTab("login")}
+            className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+              activeTab === "login"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-white shadow-soft"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"
+            }`}
           >
-            {activeTab === "signup" && (
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                  Name (optional)
-                </label>
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
-                  placeholder="Display name"
-                />
-              </div>
-            )}
+            Log in
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("signup")}
+            className={`flex-1 rounded-lg py-2.5 text-sm font-semibold transition ${
+              activeTab === "signup"
+                ? "bg-white dark:bg-stone-700 text-stone-900 dark:text-white shadow-soft"
+                : "text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white"
+            }`}
+          >
+            Sign up
+          </button>
+        </div>
+        <form
+          onSubmit={activeTab === "login" ? handleLogin : handleSignUp}
+          className="mt-6 space-y-4"
+        >
+          {activeTab === "signup" && (
             <div>
-              <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                Email
+              <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                Name (optional)
               </label>
               <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
-                placeholder="you@example.com"
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="input-field"
+                placeholder="Display name"
               />
             </div>
-            {activeTab === "login" && !magicLinkSent && (
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
-                  placeholder="Password"
-                />
-              </div>
-            )}
-            {activeTab === "signup" && (
-              <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                  Password (min 6 characters)
-                </label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 px-4 py-3"
-                  placeholder="Password"
-                />
-              </div>
-            )}
-            {message && (
-              <p className={message.type === "error" ? "text-red-600" : "text-green-600 text-sm"}>
-                {message.text}
-              </p>
-            )}
-            <div className="flex flex-col gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="tap-target w-full rounded-xl bg-primary-600 text-white font-semibold py-3"
-              >
-                {loading ? "Please wait…" : activeTab === "signup" ? "Sign up" : "Log in"}
-              </button>
-              {activeTab === "login" && !magicLinkSent && (
-                <button
-                  type="button"
-                  onClick={handleMagicLink}
-                  disabled={loading}
-                  className="tap-target w-full rounded-xl border border-stone-300 dark:border-stone-600 py-3 text-stone-700 dark:text-stone-300"
-                >
-                  Send magic link
-                </button>
-              )}
+          )}
+          <div>
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+              Email
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field"
+              placeholder="you@example.com"
+            />
+          </div>
+          {activeTab === "login" && !magicLinkSent && (
+            <div>
+              <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Password"
+              />
             </div>
-          </form>
-      </>
+          )}
+          {activeTab === "signup" && (
+            <div>
+              <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                Password (min 6 characters)
+              </label>
+              <input
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-field"
+                placeholder="Password"
+              />
+            </div>
+          )}
+          {message && (
+            <div
+              className={`rounded-xl px-4 py-3 text-sm ${
+                message.type === "error"
+                  ? "bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300"
+                  : "bg-accent-50 dark:bg-accent-950/30 text-accent-700 dark:text-accent-300"
+              }`}
+            >
+              {message.text}
+            </div>
+          )}
+          <div className="flex flex-col gap-3 pt-1">
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3.5">
+              {loading ? "Please wait…" : activeTab === "signup" ? "Sign up" : "Log in"}
+            </button>
+            {activeTab === "login" && !magicLinkSent && (
+              <button
+                type="button"
+                onClick={handleMagicLink}
+                disabled={loading}
+                className="btn-secondary w-full py-3.5"
+              >
+                Send magic link
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
     </main>
   );
 }
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={
-      <main className="min-h-dvh app-shell flex flex-col bg-background px-6 py-10">
-        <Link href="/" className="text-primary-600 dark:text-primary-400 text-sm mb-6">← Back</Link>
-        <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Welcome</h1>
-        <p className="mt-4 text-stone-500">Loading…</p>
-      </main>
-    }>
+    <Suspense
+      fallback={
+        <main className="min-h-dvh app-shell flex flex-col bg-mesh-warm dark:bg-stone-900 px-6 py-10">
+          <div className="h-5 w-16 rounded bg-stone-200 dark:bg-stone-700 animate-pulse" />
+          <h1 className="heading-display text-2xl mt-8">Welcome</h1>
+          <p className="mt-4 text-stone-500">Loading…</p>
+        </main>
+      }
+    >
       <AuthForm />
     </Suspense>
   );
