@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-dvh app-shell flex flex-col bg-mesh-warm dark:bg-gradient-to-b dark:from-primary-950 dark:via-stone-900 dark:to-stone-950">
+    <main className="min-h-dvh app-shell flex flex-col bg-warm-app">
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-14 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-pattern opacity-30 dark:opacity-10 pointer-events-none" />
         <div className="relative z-10">

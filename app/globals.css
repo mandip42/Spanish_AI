@@ -55,6 +55,20 @@ body {
   }
 }
 
+/* Warm background: solid base + mesh gradient so it shows on mobile too */
+.bg-warm-app {
+  background-color: #fef5ee;
+  background-image: radial-gradient(ellipse 120% 80% at 30% 10%, rgba(253, 220, 195, 0.7) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 100% at 85% 20%, rgba(252, 235, 215, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 120% at 10% 70%, rgba(254, 240, 228, 0.8) 0%, transparent 50%);
+}
+@media (prefers-color-scheme: dark) {
+  .bg-warm-app {
+    background-color: #1c1917;
+    background-image: radial-gradient(ellipse 120% 80% at 30% 10%, rgba(90, 52, 23, 0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 100% at 85% 20%, rgba(62, 21, 9, 0.35) 0%, transparent 50%);
+  }
+}
 /* Subtle pattern overlay option */
 .bg-pattern {
   background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z' fill='%23e7e5e4' fill-opacity='0.4'/%3E%3C/g%3E%3C/svg%3E");

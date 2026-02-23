@@ -54,7 +54,7 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "mesh-warm": "radial-gradient(at 40% 20%, rgb(254 246 240) 0px, transparent 50%), radial-gradient(at 80% 0%, rgb(253 236 224) 0px, transparent 50%), radial-gradient(at 0% 50%, rgb(253 242 233) 0px, transparent 50%)",
+        "mesh-warm": "radial-gradient(ellipse 120% 80% at 30% 10%, rgb(253 230 210) 0%, transparent 55%), radial-gradient(ellipse 100% 100% at 85% 20%, rgb(252 238 220) 0%, transparent 50%), radial-gradient(ellipse 80% 120% at 10% 70%, rgb(254 245 235) 0%, transparent 50%)",
       },
     },
   },

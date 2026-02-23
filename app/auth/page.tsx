@@ -71,7 +71,7 @@ function AuthForm() {
   };
 
   return (
-    <main className="min-h-dvh app-shell flex flex-col bg-mesh-warm dark:bg-gradient-to-b dark:from-stone-900 dark:to-stone-950 px-6 py-10">
+    <main className="min-h-dvh app-shell flex flex-col bg-warm-app px-6 py-10">
       <Link
         href="/"
         className="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400 text-sm font-medium mb-8 hover:underline"
@@ -206,7 +206,7 @@ export default function AuthPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-dvh app-shell flex flex-col bg-mesh-warm dark:bg-stone-900 px-6 py-10">
+        <main className="min-h-dvh app-shell flex flex-col bg-warm-app px-6 py-10">
           <div className="h-5 w-16 rounded bg-stone-200 dark:bg-stone-700 animate-pulse" />
           <h1 className="heading-display text-2xl mt-8">Welcome</h1>
           <p className="mt-4 text-stone-500">Loading…</p>
