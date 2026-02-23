@@ -21,7 +21,7 @@ export default async function HouseholdPage() {
     .select("household_id, role")
     .eq("user_id", user.id)
     .limit(1)
-    .single();
+    .maybeSingle();
 
   let household: { id: string; name: string; invite_code: string; owner_id: string } | null = null;
   let members: { user_id: string; display_name: string | null }[] = [];
