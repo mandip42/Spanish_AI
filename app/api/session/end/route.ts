@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+function useGemini(): boolean {
+  return !!process.env.GEMINI_API_KEY;
+}
+
+async function geminiSessionSummary(summaryPrompt: string): Promise<string> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const result = await model.generateContent(summaryPrompt);
+  return result.response.text()?.trim() ?? "";
+}
 
 type MistakeCategory =
   | "ser_estar"
@@ -52,17 +64,23 @@ export async function POST(request: Request) {
   const phrasesToInsert: { phrase_es: string; phrase_en: string | null }[] = [];
   const mistakesToInsert: { category: MistakeCategory; example_before: string; example_after: string }[] = [];
 
-  if (process.env.OPENAI_API_KEY && messages && messages.length >= 2) {
+  const hasAi = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+  if (hasAi && messages && messages.length >= 2) {
     const { buildSessionSummaryPrompt } = await import("@/lib/ai-prompts");
     const summaryPrompt = buildSessionSummaryPrompt(messages);
     try {
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: summaryPrompt }],
-        max_tokens: 600,
-        temperature: 0.3,
-      });
-      const text = completion.choices[0]?.message?.content?.trim() || "";
+      let text: string;
+      if (useGemini()) {
+        text = await geminiSessionSummary(summaryPrompt);
+      } else {
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: summaryPrompt }],
+          max_tokens: 600,
+          temperature: 0.3,
+        });
+        text = completion.choices[0]?.message?.content?.trim() || "";
+      }
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const data = JSON.parse(jsonMatch[0]) as {

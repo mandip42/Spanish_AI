@@ -1,14 +1,59 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { buildTutorSystemPrompt } from "@/lib/ai-prompts";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+function useGemini(): boolean {
+  return !!process.env.GEMINI_API_KEY;
+}
+
+async function geminiOpening(openingPrompt: string): Promise<string> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: openingPrompt,
+  });
+  const result = await model.generateContent("Send your opening message now.");
+  const response = result.response;
+  const text = response.text();
+  return text?.trim() || "¡Hola! Type **Hola** in the box below to say hello.";
+}
+
+async function geminiChat(
+  systemPrompt: string,
+  history: { role: string; content: string }[],
+  userMessage: string
+): Promise<string> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: systemPrompt,
+  });
+  const geminiHistory = history
+    .filter((m) => m.role === "user" || m.role === "assistant")
+    .map((m) => ({
+      role: m.role === "assistant" ? "model" as const : "user" as const,
+      parts: [{ text: m.content }],
+    }));
+  const chat = model.startChat({ history: geminiHistory });
+  const result = await chat.sendMessage(userMessage);
+  const text = result.response.text();
+  return text?.trim() || "No response.";
+}
+
 export async function POST(request: Request) {
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ error: "OpenAI API key not configured" }, { status: 500 });
+  const hasGemini = !!process.env.GEMINI_API_KEY;
+  const hasOpenAI = !!process.env.OPENAI_API_KEY;
+  if (!hasGemini && !hasOpenAI) {
+    return NextResponse.json(
+      { error: "Add GEMINI_API_KEY or OPENAI_API_KEY in environment variables." },
+      { status: 500 }
+    );
   }
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -62,6 +107,10 @@ export async function POST(request: Request) {
       : `The learner has just started a practice session (week ${weekNum}). Greet them in Spanish and give one short prompt or question they can respond to (e.g. a simple question or a phrase to repeat). Keep it to 2-3 sentences.`;
 
     try {
+      if (useGemini()) {
+        const assistantMessage = await geminiOpening(openingPrompt);
+        return NextResponse.json({ message: assistantMessage });
+      }
       const completion = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -74,11 +123,16 @@ export async function POST(request: Request) {
       const assistantMessage = completion.choices[0]?.message?.content?.trim() || "¡Hola! Type **Hola** in the box below to say hello.";
       return NextResponse.json({ message: assistantMessage });
     } catch (err) {
-      console.error("OpenAI opening error:", err);
-      return NextResponse.json(
-        { error: err instanceof Error ? err.message : "AI request failed" },
-        { status: 500 }
-      );
+      console.error("AI opening error:", err);
+      const message = (err as { message?: string })?.message ?? "AI request failed";
+      const status = (err as { status?: number })?.status;
+      if (status === 429) {
+        return NextResponse.json(
+          { error: useGemini() ? "Gemini rate limit exceeded. Try again later." : "OpenAI quota exceeded. Add payment at platform.openai.com." },
+          { status: 429 }
+        );
+      }
+      return NextResponse.json({ error: message }, { status: 500 });
     }
   }
 
@@ -99,16 +153,25 @@ export async function POST(request: Request) {
     lastMistakes,
   });
 
-  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    { role: "system", content: systemPrompt },
-    ...(recentMessages || []).map((m) => ({
-      role: m.role as "user" | "assistant" | "system",
-      content: m.content,
-    })),
-    { role: "user", content: user_message },
-  ];
-
   try {
+    if (useGemini()) {
+      const assistantMessage = await geminiChat(
+        systemPrompt,
+        recentMessages || [],
+        user_message
+      );
+      return NextResponse.json({ message: assistantMessage });
+    }
+
+    const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      { role: "system", content: systemPrompt },
+      ...(recentMessages || []).map((m) => ({
+        role: m.role as "user" | "assistant" | "system",
+        content: m.content,
+      })),
+      { role: "user", content: user_message },
+    ];
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages,
@@ -118,7 +181,14 @@ export async function POST(request: Request) {
     const assistantMessage = completion.choices[0]?.message?.content?.trim() || "No response.";
     return NextResponse.json({ message: assistantMessage });
   } catch (err) {
-    console.error("OpenAI error:", err);
+    console.error("AI chat error:", err);
+    const status = (err as { status?: number })?.status;
+    if (status === 429) {
+      return NextResponse.json(
+        { error: useGemini() ? "Gemini rate limit exceeded. Try again later." : "OpenAI quota exceeded. Add payment at platform.openai.com." },
+        { status: 429 }
+      );
+    }
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "AI request failed" },
       { status: 500 }

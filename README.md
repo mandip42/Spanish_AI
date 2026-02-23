@@ -8,7 +8,7 @@ Mobile-first Spanish learning PWA with AI-driven conversational practice.
 SpanishAI/
 ├── app/
 │   ├── api/
-│   │   ├── chat/route.ts          # POST: AI chat (OpenAI)
+│   │   ├── chat/route.ts          # POST: AI chat (Gemini or OpenAI)
 │   │   └── session/end/route.ts  # POST: end session, summarize, save stats/vocab/mistakes
 │   ├── app/                      # Protected app (requires auth)
 │   │   ├── layout.tsx
@@ -62,7 +62,7 @@ SpanishAI/
 
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS
 - **Backend / Auth / DB**: Supabase (email/password, magic link)
-- **AI**: OpenAI API via Next.js API routes (key server-side only)
+- **AI**: Gemini or OpenAI via Next.js API routes (key server-side only; set `GEMINI_API_KEY` or `OPENAI_API_KEY`)
 - **Hosting**: Vercel or Netlify
 
 ## Local setup
@@ -90,12 +90,15 @@ Copy `.env.example` to `.env.local` and fill in:
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-OPENAI_API_KEY=sk-your-openai-key
+# Use either (Gemini preferred if both set):
+GEMINI_API_KEY=your-gemini-key   # from https://aistudio.google.com
+OPENAI_API_KEY=sk-your-openai-key  # from https://platform.openai.com
 ```
 
 - Get URL and anon key from Supabase **Settings → API**.
 - Service role key from the same page (keep secret).
-- OpenAI key from [platform.openai.com](https://platform.openai.com).
+- **Gemini** (free tier): get API key at [Google AI Studio](https://aistudio.google.com).
+- **OpenAI**: get key at [platform.openai.com](https://platform.openai.com).
 
 ### 4. Run dev server
 

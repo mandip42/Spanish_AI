@@ -140,7 +140,7 @@ export default function PracticeClient({
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to load");
+        setError(res.status === 429 ? (data.error || "OpenAI quota exceeded. See Settings or platform.openai.com for billing.") : (data.error || "Failed to load"));
         setLoading(false);
         return;
       }
@@ -182,7 +182,7 @@ export default function PracticeClient({
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to get response");
+        setError(res.status === 429 ? (data.error || "OpenAI quota exceeded. Add payment at platform.openai.com.") : (data.error || "Failed to get response"));
         setLoading(false);
         return;
       }
