@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #1a1a1a;
+  --background: #fefbf7;
+  --primary: #db5b13;
+  --primary-soft: #f9d7ad;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #f5f5f5;
+    --background: #1a1510;
+    --primary: #ee9242;
+    --primary-soft: #3f1509;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area for mobile */
+.app-shell {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Thumb-friendly tap targets */
+.tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
