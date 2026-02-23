@@ -3,13 +3,21 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+function generateInviteCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
 interface HouseholdClientProps {
   userId: string;
   household: { id: string; name: string; invite_code: string; owner_id: string } | null;
   members: { user_id: string; display_name: string | null }[];
   memberStats: { user_id: string; minutes: number; streak_count: number }[];
   isOwner: boolean;
-  generateInviteCode: () => string;
 }
 
 export default function HouseholdClient({
@@ -18,7 +26,6 @@ export default function HouseholdClient({
   members,
   memberStats,
   isOwner,
-  generateInviteCode,
 }: HouseholdClientProps) {
   const [inviteCode, setInviteCode] = useState("");
   const [joinCode, setJoinCode] = useState("");

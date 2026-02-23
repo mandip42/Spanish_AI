@@ -2,15 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import HouseholdClient from "./HouseholdClient";
 
-function generateInviteCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
-}
-
 export default async function HouseholdPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -76,7 +67,6 @@ export default async function HouseholdPage() {
       members={members}
       memberStats={memberStats}
       isOwner={isOwner}
-      generateInviteCode={generateInviteCode}
     />
   );
 }
