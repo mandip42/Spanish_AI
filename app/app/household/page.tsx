@@ -26,19 +26,13 @@ export default async function HouseholdPage() {
       .maybeSingle();
     household = h ?? null;
     isOwner = membership.role === "owner";
-    const { data: mems } = await supabase
-      .from("household_members")
-      .select("user_id")
-      .eq("household_id", membership.household_id);
+    const { data: mems } = await supabase.rpc("get_household_members", {
+      p_household_id: membership.household_id,
+    });
     if (mems?.length) {
-      const ids = mems.map((m) => m.user_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name")
-        .in("id", ids);
-      members = (profiles || []).map((p) => ({
-        user_id: p.id,
-        display_name: p.display_name,
+      members = mems.map((m: { user_id: string; display_name: string | null }) => ({
+        user_id: m.user_id,
+        display_name: m.display_name,
       }));
     }
   }

@@ -168,21 +168,26 @@ CREATE POLICY "households_update_owner" ON public.households
 CREATE POLICY "households_delete_owner" ON public.households
   FOR DELETE USING (auth.uid() = owner_id);
 
--- household_members: members can read (use function to avoid RLS recursion)
-CREATE OR REPLACE FUNCTION public.get_my_household_ids()
-RETURNS SETOF uuid
+-- household_members: user can see only their own rows (avoids RLS recursion)
+CREATE POLICY "household_members_select" ON public.household_members
+  FOR SELECT USING (user_id = auth.uid());
+-- RPC to list household members (runs as definer, no RLS recursion)
+CREATE OR REPLACE FUNCTION public.get_household_members(p_household_id uuid)
+RETURNS TABLE(user_id uuid, display_name text)
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT household_id FROM public.household_members WHERE user_id = auth.uid();
-$$;
-CREATE POLICY "household_members_select" ON public.household_members
-  FOR SELECT USING (
-    user_id = auth.uid()
-    OR household_id IN (SELECT public.get_my_household_ids())
+  SELECT hm.user_id, p.display_name
+  FROM public.household_members hm
+  LEFT JOIN public.profiles p ON p.id = hm.user_id
+  WHERE hm.household_id = p_household_id
+  AND EXISTS (
+    SELECT 1 FROM public.household_members m
+    WHERE m.household_id = p_household_id AND m.user_id = auth.uid()
   );
+$$;
 CREATE POLICY "household_members_insert_owner" ON public.household_members
   FOR INSERT WITH CHECK (
     EXISTS (
