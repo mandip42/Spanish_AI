@@ -95,7 +95,7 @@ export default function PracticeClient({
       .select("household_id")
       .eq("user_id", userId)
       .limit(1)
-      .single();
+      .maybeSingle();
     const { data: newSession, error: err } = await supabase
       .from("sessions")
       .insert({
@@ -119,7 +119,45 @@ export default function PracticeClient({
       setSessionEnded(false);
       setTakeaway(null);
       setError(null);
+      fetchOpeningMessage(newSession.id);
     }
+  };
+
+  const fetchOpeningMessage = async (sid: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sid,
+          user_message: "",
+          first_message: true,
+          week,
+          accent,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to load");
+        setLoading(false);
+        return;
+      }
+      const opening = data.message as string;
+      setMessages((prev) => [
+        ...prev,
+        { id: crypto.randomUUID(), role: "assistant", content: opening },
+      ]);
+      await supabase.from("session_messages").insert({
+        session_id: sid,
+        role: "assistant",
+        content: opening,
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Network error");
+    }
+    setLoading(false);
   };
 
   const sendMessage = async (text: string) => {
@@ -377,7 +415,11 @@ export default function PracticeClient({
             </button>
           </div>
           <p className="mt-2 text-xs text-stone-500 dark:text-stone-400 px-1">
-            Speak out loud: read the prompts and answer in Spanish. Use 🎤 if your browser supports it.
+            {week === 1 ? (
+              <>Type what the tutor asked for above (e.g. <strong>Hola</strong>), then Send. You can also use 🎤 to speak.</>
+            ) : (
+              <>Speak out loud: read the prompts and answer in Spanish. Use 🎤 if your browser supports it.</>
+            )}
           </p>
         </div>
       )}
