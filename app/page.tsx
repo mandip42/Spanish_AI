@@ -28,8 +28,9 @@ export default function LandingPage() {
           </p>
         </div>
       </div>
-      <footer className="relative py-5 text-center text-xs text-stone-400 dark:text-stone-500 border-t border-stone-200/60 dark:border-stone-800">
-        Speaking-first · Gentle corrections · Structured program
+      <footer className="relative py-5 text-center text-xs text-stone-400 dark:text-stone-500 border-t border-stone-200/60 dark:border-stone-800 space-y-1">
+        <p>Speaking-first · Gentle corrections · Structured program</p>
+        <p>Developed by Mandip Goswami</p>
       </footer>
     </main>
   );

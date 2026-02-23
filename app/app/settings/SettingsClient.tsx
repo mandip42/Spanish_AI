@@ -238,6 +238,9 @@ export default function SettingsClient({
           Sign out
         </button>
       </section>
+      <p className="mt-10 text-center text-xs text-stone-400 dark:text-stone-500">
+        Developed by Mandip Goswami
+      </p>
     </div>
   );
 }
