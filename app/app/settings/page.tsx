@@ -21,7 +21,7 @@ export default async function SettingsPage() {
     .from("profiles")
     .select("display_name, accent, daily_goal_minutes, week")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   return (
     <SettingsClient

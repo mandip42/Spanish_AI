@@ -23,13 +23,13 @@ export default async function ProgressPage() {
     .select("minutes, streak_count, sessions_count")
     .eq("user_id", user.id)
     .eq("date", today)
-    .single();
+    .maybeSingle();
 
   const { data: profile } = await supabase
     .from("profiles")
     .select("daily_goal_minutes, week")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: last7Days } = await supabase
     .from("user_stats_daily")

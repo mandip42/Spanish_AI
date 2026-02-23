@@ -32,8 +32,8 @@ export default async function HouseholdPage() {
       .from("households")
       .select("id, name, invite_code, owner_id")
       .eq("id", membership.household_id)
-      .single();
-    household = h;
+      .maybeSingle();
+    household = h ?? null;
     isOwner = membership.role === "owner";
     const { data: mems } = await supabase
       .from("household_members")

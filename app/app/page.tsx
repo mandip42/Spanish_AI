@@ -11,7 +11,7 @@ export default async function DashboardPage() {
     .from("profiles")
     .select("display_name, week, daily_goal_minutes")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   const today = new Date().toISOString().slice(0, 10);
   const { data: todayStats } = await supabase
@@ -19,14 +19,14 @@ export default async function DashboardPage() {
     .select("minutes, streak_count, sessions_count")
     .eq("user_id", user.id)
     .eq("date", today)
-    .single();
+    .maybeSingle();
 
   const { data: householdMember } = await supabase
     .from("household_members")
     .select("household_id")
     .eq("user_id", user.id)
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const displayName = profile?.display_name || user.email?.split("@")[0] || "You";
   const goal = profile?.daily_goal_minutes ?? 30;

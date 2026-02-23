@@ -11,7 +11,7 @@ export default async function PracticePage() {
     .from("profiles")
     .select("week, accent, learner_memory")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   const { data: recentSessions } = await supabase
     .from("sessions")
