@@ -27,20 +27,23 @@ export default function HouseholdClient({
   memberStats,
   isOwner,
 }: HouseholdClientProps) {
+  const [householdName, setHouseholdName] = useState("");
   const [inviteCode, setInviteCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const supabase = createClient();
 
   const createHousehold = async () => {
     setLoading(true);
     setError(null);
+    const name = householdName.trim() || "Mi hogar";
     const code = generateInviteCode();
     const { data: newHousehold, error: createErr } = await supabase
       .from("households")
-      .insert({ name: "Mi hogar", invite_code: code, owner_id: userId })
+      .insert({ name, invite_code: code, owner_id: userId })
       .select("id")
       .single();
     if (createErr) {
@@ -131,6 +134,17 @@ export default function HouseholdClient({
       {!household ? (
         <div className="mt-8 space-y-6">
           <div className="card p-5">
+            <label className="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2">
+              Household name
+            </label>
+            <input
+              type="text"
+              value={householdName}
+              onChange={(e) => setHouseholdName(e.target.value)}
+              placeholder="e.g. Smith Family, Mi hogar"
+              className="input-field mb-4"
+              maxLength={80}
+            />
             <button
               type="button"
               onClick={createHousehold}
@@ -140,12 +154,31 @@ export default function HouseholdClient({
               {loading ? "Creating…" : "Create household"}
             </button>
             {inviteCode && (
-              <p className="mt-4 text-center">
-                Invite code:{" "}
-                <strong className="text-xl tracking-[0.25em] text-primary-600 dark:text-primary-400 font-display">
-                  {inviteCode}
-                </strong>
-              </p>
+              <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
+                <p className="text-sm font-medium text-stone-600 dark:text-stone-400 mb-2">
+                  Invite code — share this so others can join:
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl tracking-[0.25em] text-primary-600 dark:text-primary-400 font-display font-semibold flex-1 rounded-lg bg-primary-50 dark:bg-primary-950/50 py-2 px-3 text-center">
+                    {inviteCode}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(inviteCode);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      } catch {
+                        setError("Could not copy");
+                      }
+                    }}
+                    className="btn-secondary shrink-0 py-2.5 px-4 text-sm"
+                  >
+                    {copied ? "Copied!" : "Copy"}
+                  </button>
+                </div>
+              </div>
             )}
           </div>
           <div className="card p-5">
@@ -174,12 +207,32 @@ export default function HouseholdClient({
         </div>
       ) : (
         <div className="mt-8">
-          <p className="text-stone-500 dark:text-stone-400 text-sm">
-            Invite code:{" "}
-            <strong className="tracking-widest text-primary-600 dark:text-primary-400 font-display">
-              {household.invite_code}
-            </strong>
+          <h2 className="text-lg font-display font-semibold text-stone-900 dark:text-white">
+            {household.name}
+          </h2>
+          <p className="mt-2 text-stone-500 dark:text-stone-400 text-sm">
+            Invite code — share so others can join:
           </p>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="text-lg tracking-[0.2em] text-primary-600 dark:text-primary-400 font-display font-semibold rounded-lg bg-primary-50 dark:bg-primary-950/50 py-2 px-3">
+              {household.invite_code}
+            </span>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(household.invite_code);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                } catch {
+                  setError("Could not copy");
+                }
+              }}
+              className="btn-secondary shrink-0 py-2.5 px-4 text-sm"
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
           <h2 className="mt-6 text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">
             Household dashboard
           </h2>

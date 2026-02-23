@@ -168,13 +168,20 @@ CREATE POLICY "households_update_owner" ON public.households
 CREATE POLICY "households_delete_owner" ON public.households
   FOR DELETE USING (auth.uid() = owner_id);
 
--- household_members: members can read; owner can manage
+-- household_members: members can read (use function to avoid RLS recursion)
+CREATE OR REPLACE FUNCTION public.get_my_household_ids()
+RETURNS SETOF uuid
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT household_id FROM public.household_members WHERE user_id = auth.uid();
+$$;
 CREATE POLICY "household_members_select" ON public.household_members
   FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.household_members hm
-      WHERE hm.household_id = household_members.household_id AND hm.user_id = auth.uid()
-    )
+    user_id = auth.uid()
+    OR household_id IN (SELECT public.get_my_household_ids())
   );
 CREATE POLICY "household_members_insert_owner" ON public.household_members
   FOR INSERT WITH CHECK (
